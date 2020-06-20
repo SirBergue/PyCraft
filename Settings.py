@@ -1,11 +1,23 @@
 # Blocks constants
+
+# Old method of loading textures.
+#EARTH_SIDES = {
+#	0: [2, 3],
+#	1: [2, 3],
+#	2: [3, 2],
+#	3: [1, 3],
+#	4: [2, 3],
+#	5: [2, 3]
+#}
+
 EARTH_SIDES = {
 	0: [2, 3],
-	1: [2, 3],
-	2: [3, 2],
-	3: [1, 3],
-	4: [2, 3],
-	5: [2, 3]
+	1: [3, 2],
+	2: [1, 3]
+}
+
+STONE_SIDES = {
+	0: [0, 3]
 }
 
 # Texture constants

@@ -155,14 +155,16 @@ class Window(pyglet.window.Window):
 class TextureLoader:
 	def __init__(self, path):
 		self.raw_spritesheet = pyglet.image.load(path)
+
 		self.earth_block = self.load_texture_with_sides(16, EARTH_SIDES)
+		self.stone_block = self.load_texture_with_sides(16, STONE_SIDES)
 
 	def load_texture_with_sides(self, size, sides_location:dict):
 		""" Method called to return a spritesheet loaded and its sides"""
 
 		sides = []
 
-		for i in range(6):
+		for i in range(len(sides_location)):
 			sides.append(pyglet.graphics.TextureGroup(
 					self.raw_spritesheet.get_region(
 							x=sides_location[i][0] * size,
