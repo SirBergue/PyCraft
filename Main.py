@@ -64,6 +64,10 @@ class Window(pyglet.window.Window):
 
 		self.framerate.draw()
 
+	def draw_player_location(self):
+		self.player_location_label.text = f'X: {self.player.pos[0] // 1}   Y: {self.player.pos[1] // 1}   Z: {self.player.pos[2] // 1}'
+		self.player_location_label.draw()
+
 	def draw_player_target(self):
 		""" Method used to draw a target to a Player"""
 		glColor3d(0, 0, 0)
@@ -88,6 +92,7 @@ class Window(pyglet.window.Window):
 		self.last_time_framerate = time.time()
 		self.frames_passed = 0
 		self.framerate = pyglet.text.Label(text='Unknown', font_size=32, x=10, y=10, color=(255, 255, 255, 255))
+		self.player_location_label = pyglet.text.Label(text='Unknown', font_size=28, x=1450, y=1040, color=(255, 255, 255, 255))
 
 		self.player = Player((0.5, 18, 1.5), (-30, 0))
 		self.world = World(self.texture_loader)
@@ -116,11 +121,12 @@ class Window(pyglet.window.Window):
 		else:
 			chunk = player_z // 16
 
-		block_x = player_x
-		block_y = player_y
-		block_z = player_z
+		block_x = player_x // 1
+		block_y = player_y // 1
+		block_z = player_z // 1
 
-		block_number = ((block_x // 1) * 16 ** 2) + ((block_y // 1) * 16) + (block_z // 1)
+		block_number = block_x * block_y * block_z
+		# idea
 
 		self.world.remove_block(chunk, block_number)
 
@@ -130,6 +136,12 @@ class Window(pyglet.window.Window):
 
 	def update(self, dt):
 		self.player.update(dt, self.key_handler)
+
+		if not self.player.flying:
+			self.player.pos[1] -= self.player.vel
+
+			if self.player.gravity < 1:
+				self.player.vel += self.player.gravity
 
 	def on_draw(self):
 		""" Method called by Pyglet to draw Canvas """
@@ -149,6 +161,7 @@ class Window(pyglet.window.Window):
 		self.set_2d()
 		self.draw_player_target()
 		self.draw_framerate()
+		self.draw_player_location()
 
 		glPopMatrix()
 
@@ -156,8 +169,13 @@ class TextureLoader:
 	def __init__(self, path):
 		self.raw_spritesheet = pyglet.image.load(path)
 
-		self.earth_block = self.load_texture_with_sides(16, EARTH_SIDES)
-		self.stone_block = self.load_texture_with_sides(16, STONE_SIDES)
+		self.grass_block   = self.load_texture_with_sides(16, GRASS_SIDES)
+		self.earth_block   = self.load_texture_with_sides(16, EARTH_SIDES)
+		self.stone_block   = self.load_texture_with_sides(16, STONE_SIDES)
+		self.bedrock_block = self.load_texture_with_sides(16, BEDROCK_SIDES)
+		self.coal_block    = self.load_texture_with_sides(16, COAL_SIDES)
+		self.leaf_block    = self.load_texture_with_sides(16, LEAF_SIDES)
+		self.tree_block    = self.load_texture_with_sides(16, TREE_SIDES)
 
 	def load_texture_with_sides(self, size, sides_location:dict):
 		""" Method called to return a spritesheet loaded and its sides"""

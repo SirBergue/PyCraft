@@ -2,7 +2,9 @@ import pyglet
 from pyglet.gl import *
 
 from Settings import *
+
 import time
+import random
 
 class Chunk:
 	def __init__(self, tex_loader, chunk_x, chunk_z):
@@ -10,6 +12,9 @@ class Chunk:
 
 		self.chunk_x = chunk_x * CHUNK_WIDTH
 		self.chunk_z = chunk_z * CHUNK_WIDTH
+
+		print(chunk_x)
+		print(chunk_z)
 
 		self.tex_loader = tex_loader
 
@@ -24,14 +29,76 @@ class Chunk:
 
 		start = time.process_time()
 
+		# Generate world
 		for x in range(CHUNK_WIDTH):
 			for y in range(CHUNK_HEIGHT):
 				for z in range(CHUNK_WIDTH):
+					if y == 15:
+						self.using_texture = self.tex_loader.grass_block
+					elif y > 13 and y < 15:
+						self.using_texture = self.tex_loader.earth_block
+					elif y == 0:
+						self.using_texture = self.tex_loader.bedrock_block
+					else:
+						chance = random.randint(0, 100)
+
+						if chance <= 15:
+							self.using_texture = self.tex_loader.coal_block
+						else:
+							self.using_texture = self.tex_loader.stone_block
+
+					if not ((y > 0 and y < (CHUNK_HEIGHT - 1)) and
+							(x + chunk_x > 0 and x < (CHUNK_WIDTH - 1)) and
+							(z + chunk_z > 0 and z < (CHUNK_WIDTH - 1))):
+
+						self.blocks[i] = self.generate_block(
+							x + self.chunk_x,
+							y,
+							z + self.chunk_z,
+							self.using_texture
+						)
+
+						i += 1
+
+		x = random.randint(0, 15)
+		y = 16
+		z = random.randint(0, 15)
+
+		self.using_texture = self.tex_loader.tree_block
+
+		j = 0
+
+		for j in range(4):
+			self.blocks[i] = self.generate_block(
+				x + self.chunk_x,
+				y + j,
+				z + self.chunk_z,
+				self.using_texture
+			)
+
+			i += 1
+
+		j += 1
+
+		self.using_texture = self.tex_loader.leaf_block
+
+		for n in range(2):
+			for a in range(2):
+				for b in range(2):
 					self.blocks[i] = self.generate_block(
-						x + self.chunk_x,
-						y,
-						z + self.chunk_z,
-						self.tex_loader.earth_block
+						x + self.chunk_x + a,
+						y + j + n,
+						z + self.chunk_z + b,
+						self.using_texture
+					)
+
+					i += 1
+
+					self.blocks[i] = self.generate_block(
+						x + self.chunk_x - a,
+						y + j + n,
+						z + self.chunk_z - b,
+						self.using_texture
 					)
 
 					i += 1
@@ -52,6 +119,7 @@ class Chunk:
 
 		vertex = vertex_back + vertex_front + vertex_top + vertex_bottom + vertex_left + vertex_right
 		vertex_side = vertex_back + vertex_front + vertex_left + vertex_right
+		vertex_border = vertex_top + vertex_bottom
 
 		if (len(tex_sides) == 1):
 			texture = tex_sides[0]
@@ -59,6 +127,17 @@ class Chunk:
 			square_dict_block.append(
 				self._generate_block(texture, vertex, 24)
 			)
+
+			return square_dict_block
+
+		elif (len(tex_sides) == 2):
+			side_texture    = tex_sides[0]
+			border_texture  = tex_sides[1]
+
+			texture_vertex = {
+				0: [side_texture,   vertex_side,   16],
+				1: [border_texture, vertex_border, 8]
+			}
 
 		elif (len(tex_sides) == 3):
 			side_texture    = tex_sides[0]
@@ -70,15 +149,6 @@ class Chunk:
 				1: [top_texture,    vertex_top,    4],
 				2: [bottom_texture, vertex_bottom, 4],
 			}
-
-			for key in texture_vertex:
-				square_dict_block.append(
-					self._generate_block(
-						texture_vertex[key][0],
-						texture_vertex[key][1],
-						texture_vertex[key][2]
-					)
-				)
 
 		else:
 			back_texture   = tex_sides[0]
@@ -97,14 +167,14 @@ class Chunk:
 				5: [right_texture,  vertex_right,  4]
 			}
 
-			for key in texture_vertex:
-				square_dict_block.append(
-					self._generate_block(
-						texture_vertex[key][0],
-						texture_vertex[key][1],
-						texture_vertex[key][2]
-					)
+		for key in texture_vertex:
+			square_dict_block.append(
+				self._generate_block(
+					texture_vertex[key][0],
+					texture_vertex[key][1],
+					texture_vertex[key][2]
 				)
+			)
 
 		return square_dict_block
 

@@ -11,6 +11,11 @@ class Player:
 		self.pos = list(pos)
 		self.rot = list(rot)
 
+		self.flying = True
+
+		self.vel = 0
+		self.gravity = 0.005
+
 	def mouse_motion(self, dx, dy):
 
 		dx /= 3
@@ -26,7 +31,7 @@ class Player:
 			self.rot[0] = -90
 
 	def update(self, dt, keys):
-		sens = 0.8
+		sens = 1
 		d = dt * 10
 
 		rotY = -self.rot[1] / 180 * math.pi
@@ -52,6 +57,11 @@ class Player:
 
 		if keys[key.SPACE]:
 			self.pos[1] += d
+			self.flying = True
+
+		if keys[key.TAB]:
+			self.vel = 0
+			self.flying = False
 
 		if keys[key.LSHIFT]:
 			self.pos[1] -= d
