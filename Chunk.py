@@ -8,7 +8,8 @@ import random
 
 class Chunk:
 	def __init__(self, tex_loader, chunk_x, chunk_z):
-		self.batch = pyglet.graphics.Batch()
+		self.batch  = pyglet.graphics.Batch()
+		self.custom = pyglet.graphics.Batch()
 
 		self.chunk_x = chunk_x * CHUNK_WIDTH
 		self.chunk_z = chunk_z * CHUNK_WIDTH
@@ -42,12 +43,6 @@ class Chunk:
 		print(f'Finished: {time.process_time() - start}')
 
 	def generate_world(self, x, y, z, chunk_x, chunk_z):
-		if int(100 * random.random()) <= 10:
-			default = self.tex_loader.coal_block
-		else:
-			default = self.tex_loader.stone_block
-
-		self.using_texture = self.texture_layer.get(y, default)
 
 		generate = False
 
@@ -60,7 +55,7 @@ class Chunk:
 					generate = True
 				else:
 					if not (z + chunk_z > 0 and z < (CHUNK_WIDTH - 1)):
-							generate = True
+						generate = True
 
 			elif (chunk_x == (CHUNK_DISTANCE - 1)):
 				# Border verification
@@ -68,7 +63,7 @@ class Chunk:
 					generate = True
 				else:
 					if not (z + chunk_z > 0 and z <= (CHUNK_WIDTH - 1)):
-							generate = True
+						generate = True
 
 			elif (chunk_z == (CHUNK_DISTANCE - 1)):
 				# Border verification
@@ -76,8 +71,7 @@ class Chunk:
 					generate = True
 				else:
 					if not (z + chunk_z > 0 and z < (CHUNK_WIDTH - 1)):
-							generate = True
-
+						generate = True
 			else:
 				# Normal verification
 				if not (x + chunk_x > 0 and x <= (CHUNK_WIDTH - 1)):
@@ -87,11 +81,19 @@ class Chunk:
 						generate = True
 
 		if generate:
+			if int(100 * random.random()) <= 10:
+				default = self.tex_loader.coal_block
+			else:
+				default = self.tex_loader.stone_block
+
+			self.using_texture = self.texture_layer.get(y, default)
+
 			self.blocks[self.now] = self.generate_block(
 				x + self.chunk_x,
 				y,
 				z + self.chunk_z,
-				self.using_texture
+				self.using_texture,
+				self.batch
 			)
 			self.now += 1
 
@@ -106,7 +108,8 @@ class Chunk:
 				x + self.chunk_x,
 				CHUNK_HEIGHT + height,
 				z + self.chunk_z,
-				self.using_texture
+				self.using_texture,
+				self.custom
 			)
 
 			self.now += 1
@@ -122,7 +125,8 @@ class Chunk:
 						x + self.chunk_x + leaf_x,
 						CHUNK_HEIGHT + height + leaf_y,
 						z + self.chunk_z + leaf_z,
-						self.using_texture
+						self.using_texture,
+						self.custom
 					)
 
 					self.now += 1
@@ -131,12 +135,13 @@ class Chunk:
 						x + self.chunk_x - leaf_x,
 						CHUNK_HEIGHT + height + leaf_y,
 						z + self.chunk_z - leaf_z,
-						self.using_texture
+						self.using_texture,
+						self.custom
 					)
 
 					self.now += 1
 
-	def generate_block(self, x, y, z, tex_sides):
+	def generate_block(self, x, y, z, tex_sides, batch):
 		square_dict_block = []
 
 		X, Y, Z = x + 1, y + 1, z + 1
@@ -156,7 +161,7 @@ class Chunk:
 			texture = tex_sides[0]
 
 			square_dict_block.append(
-				self._generate_block(texture, vertex, 24)
+				self._generate_block(texture, vertex, 24, batch)
 			)
 
 			return square_dict_block
@@ -203,14 +208,15 @@ class Chunk:
 				self._generate_block(
 					texture_vertex[key][0],
 					texture_vertex[key][1],
-					texture_vertex[key][2]
+					texture_vertex[key][2],
+					batch
 				)
 			)
 
 		return square_dict_block
 
-	def _generate_block(self, texture, vertex, size):
-		return self.batch.add(
+	def _generate_block(self, texture, vertex, size, batch):
+		return batch.add(
 			size,
 			GL_QUADS,
 			texture,

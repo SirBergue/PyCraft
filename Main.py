@@ -155,13 +155,28 @@ class Window(pyglet.window.Window):
 		self.set_3d()
 		self.push_update(self.player.pos, self.player.rot)
 
-		# Render optimizations
 		for chunk in self.world.chunks:
 			if not chunk.chunk_x - CHUNK_WIDTH * RENDER_VISION > self.player.pos[0]:
 				if not self.player.pos[0] > chunk.chunk_x + CHUNK_WIDTH * RENDER_VISION:
 					if not chunk.chunk_z - CHUNK_WIDTH * RENDER_VISION > self.player.pos[2]:
 						if not self.player.pos[2] > chunk.chunk_z + CHUNK_WIDTH * RENDER_VISION:
 							chunk.batch.draw()
+
+		for chunk in self.world.chunks:
+			if not chunk.chunk_x - CHUNK_WIDTH * RENDER_VISION > self.player.pos[0]:
+				if not self.player.pos[0] > chunk.chunk_x + CHUNK_WIDTH * RENDER_VISION:
+					if not chunk.chunk_z - CHUNK_WIDTH * RENDER_VISION > self.player.pos[2]:
+						if not self.player.pos[2] > chunk.chunk_z + CHUNK_WIDTH * RENDER_VISION:
+							# Enable transparecy
+							glClearColor(0, 0, 0, 0)
+							glEnable(GL_BLEND)
+							glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+
+							chunk.custom.draw()
+
+							# Disable transparecy
+							glClearColor(0.5, 0.6, 1.0, 1.0)
+							glDisable(GL_BLEND)
 
 		self.set_2d()
 		self.draw_player_target()
@@ -210,19 +225,20 @@ def setup():
 	""" This function is used to setup game things """
 
 	# Clear the window
-	glClearColor(0.5, 0.7, 1, 1)
+	glClearColor(0.5, 0.6, 1.0, 1.0)
 
+	# Enable face culling
 	glEnable(GL_CULL_FACE)
 
 	# Enables a simple fog
 	glEnable(GL_FOG)
-	glFogfv(GL_FOG_COLOR, (GLfloat * 4)(0.5, 0.69, 1.0, 1))
+	glFogfv(GL_FOG_COLOR, (GLfloat * 4)(0.5, 0.6, 1.0, 0))
 
 	glHint(GL_FOG_HINT, GL_DONT_CARE)
 	glFogi(GL_FOG_MODE, GL_LINEAR)
 
 	glFogf(GL_FOG_START, 20.0)
-	glFogf(GL_FOG_END, 60.0)
+	glFogf(GL_FOG_END, 80.0)
 
 if __name__ == '__main__':
 	# Create Window Object
