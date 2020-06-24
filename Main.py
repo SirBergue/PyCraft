@@ -92,9 +92,9 @@ class Window(pyglet.window.Window):
 		self.last_time_framerate = time.time()
 		self.frames_passed = 0
 		self.framerate = pyglet.text.Label(text='Unknown', font_size=32, x=10, y=10, color=(255, 255, 255, 255))
-		self.player_location_label = pyglet.text.Label(text='Unknown', font_size=28, x=1450, y=1040, color=(255, 255, 255, 255))
+		self.player_location_label = pyglet.text.Label(text='Unknown', font_size=24, x=1450, y=1040, color=(255, 255, 255, 255))
 
-		self.player = Player((0.5, 18, 1.5), (-30, 0))
+		self.player = Player((0.5, 18, 0.5), (60, 90))
 		self.world = World(self.texture_loader)
 
 		# Creates a player target
@@ -142,6 +142,11 @@ class Window(pyglet.window.Window):
 
 			if self.player.gravity < 1:
 				self.player.vel += self.player.gravity
+				self.player.vel = self.player.vel
+
+		if self.player.pos[1] <= -20:
+			self.player.pos[1] = 18
+			self.player.vel = 0
 
 	def on_draw(self):
 		""" Method called by Pyglet to draw Canvas """
@@ -169,6 +174,8 @@ class TextureLoader:
 	def __init__(self, path):
 		self.raw_spritesheet = pyglet.image.load(path)
 
+		start = time.process_time()
+
 		self.grass_block   = self.load_texture_with_sides(16, GRASS_SIDES)
 		self.earth_block   = self.load_texture_with_sides(16, EARTH_SIDES)
 		self.stone_block   = self.load_texture_with_sides(16, STONE_SIDES)
@@ -176,6 +183,8 @@ class TextureLoader:
 		self.coal_block    = self.load_texture_with_sides(16, COAL_SIDES)
 		self.leaf_block    = self.load_texture_with_sides(16, LEAF_SIDES)
 		self.tree_block    = self.load_texture_with_sides(16, TREE_SIDES)
+
+		print(f'Finished Block Loading: {time.process_time() - start}')
 
 	def load_texture_with_sides(self, size, sides_location:dict):
 		""" Method called to return a spritesheet loaded and its sides"""
