@@ -7,6 +7,7 @@ import time
 from Settings import *
 from Player import *
 from Chunk import *
+from Inventory import *
 
 """ Window Class
 
@@ -96,6 +97,7 @@ class Window(pyglet.window.Window):
 
 		self.player = Player((0.5, 18, 0.5), (60, 90))
 		self.world = World(self.texture_loader)
+		self.inv = Inventory(self.width, self.height)
 
 		# Creates a player target
 		self.player_target = pyglet.graphics.vertex_list(4, ('v2i', (
@@ -136,6 +138,7 @@ class Window(pyglet.window.Window):
 
 	def update(self, dt):
 		self.player.update(dt, self.key_handler)
+		self.inv.update(self.key_handler)
 
 		if not self.player.flying:
 			self.player.pos[1] -= self.player.vel
@@ -182,6 +185,7 @@ class Window(pyglet.window.Window):
 		self.draw_player_target()
 		self.draw_framerate()
 		self.draw_player_location()
+		self.inv.draw()
 
 		glPopMatrix()
 
