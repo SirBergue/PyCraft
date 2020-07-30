@@ -93,7 +93,14 @@ class Window(pyglet.window.Window):
 		self.last_time_framerate = time.time()
 		self.frames_passed = 0
 		self.framerate = pyglet.text.Label(text='Unknown', font_size=32, x=10, y=10, color=(255, 255, 255, 255))
-		self.player_location_label = pyglet.text.Label(text='Unknown', font_size=24, x=1450, y=1040, color=(255, 255, 255, 255))
+
+		self.player_location_label = pyglet.text.Label(
+			text='Unknown',
+			font_size=24,
+			x=self.width - (self.width / 4),
+			y=self.height - 40,
+			color=(255, 255, 255, 255)
+		)
 
 		self.player = Player((0.5, 18, 0.5), (60, 90))
 		self.world = World(self.texture_loader)

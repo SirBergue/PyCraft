@@ -6,10 +6,10 @@ from Settings import *
 
 class Inventory:
     def __init__(self, width, height):
-        self.base_distance = 65
+        self.base_distance = 50
         self.inv_size = 9
 
-        self.start_y = 50
+        self.start_y = 0
         self.start_x = (width - self.base_distance * self.inv_size) // 2
 
         self.indice = 0
