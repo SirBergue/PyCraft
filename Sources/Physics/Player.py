@@ -4,7 +4,7 @@ from pyglet.window import key
 
 import math
 
-from Settings import *
+from Sources.Settings import *
 
 class Player:
 	def __init__(self, pos=(0, 0, 0), rot=(0, 0)):

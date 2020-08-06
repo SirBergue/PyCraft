@@ -1,7 +1,7 @@
 import pyglet
 from pyglet.gl import *
 
-from Settings import *
+from Sources.Settings import *
 
 import time
 import random

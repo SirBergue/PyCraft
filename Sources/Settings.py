@@ -42,13 +42,13 @@ TREE_SIDES = {
 }
 
 # Texture constants
-TEXTURE_PATH = "Atlas.png"
+TEXTURE_PATH = "Assets/Atlas.png"
 
 # Player constants
 TARGET_SIZE = 16
 
 # Chunk constants
 RENDER_VISION   = 2
-CHUNK_DISTANCE  = 5
+CHUNK_DISTANCE  = 15
 CHUNK_WIDTH     = 16
 CHUNK_HEIGHT    = 16

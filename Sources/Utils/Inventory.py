@@ -2,7 +2,7 @@ import pyglet
 from pyglet.gl import *
 from pyglet.window import key
 
-from Settings import *
+from Sources.Settings import *
 
 class Inventory:
     def __init__(self, width, height):

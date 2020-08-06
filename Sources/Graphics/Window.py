@@ -2,12 +2,12 @@ import pyglet
 from pyglet.gl import *
 from pyglet.window import key, mouse
 
-import time
+from Sources.Settings import *
+from Sources.Physics.Player import *
+from Sources.World.Chunk import *
+from Sources.Utils.Inventory import *
 
-from Settings import *
-from Player import *
-from Chunk import *
-from Inventory import *
+import time
 
 """ Window Class
 
@@ -15,7 +15,6 @@ Here we will be creating a Class used by Pyglet to generate windows;
 Parcially main game class
 """
 class Window(pyglet.window.Window):
-
 	def push_update(self, pos, rot):
 		glPushMatrix()
 
@@ -79,7 +78,10 @@ class Window(pyglet.window.Window):
 		""" Main class constructor """
 		super().__init__(*args, **kwargs)
 
-		# Load key handlers
+        # Set the mouse exclusive
+		self.set_exclusive_mouse(True)
+
+        # Load key handlers
 		self.key_handler = pyglet.window.key.KeyStateHandler()
 		self.push_handlers(self.key_handler)
 
@@ -231,32 +233,3 @@ class TextureLoader:
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
 
 		return sides
-
-def setup():
-	""" This function is used to setup game things """
-
-	# Clear the window
-	glClearColor(0.5, 0.6, 1.0, 1.0)
-
-	# Enable face culling
-	glEnable(GL_CULL_FACE)
-
-	# Enables a simple fog
-	glEnable(GL_FOG)
-	glFogfv(GL_FOG_COLOR, (GLfloat * 4)(0.5, 0.6, 1.0, 0))
-
-	glHint(GL_FOG_HINT, GL_DONT_CARE)
-	glFogi(GL_FOG_MODE, GL_LINEAR)
-
-	glFogf(GL_FOG_START, 20.0)
-	glFogf(GL_FOG_END, 80.0)
-
-if __name__ == '__main__':
-	# Create Window Object
-	window = Window(caption='PyCraft', resizable=True, fullscreen=True, vsync=True)
-	window.set_exclusive_mouse(True)
-
-	setup()
-
-	# Start pyglet window
-	pyglet.app.run()
