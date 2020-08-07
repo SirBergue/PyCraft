@@ -18,6 +18,8 @@ class Launcher:
         self.FADE_IN_TIME = 2.5
         self.FADE_OUT_TIME = 2.5
 
+        self.isGameLoaded = False
+
         self.ST_FADEIN = 0
         self.ST_FADEOUT = 1
 
@@ -27,8 +29,8 @@ class Launcher:
         self.width, self.height = infoObject.current_w, infoObject.current_h
 
         self.screen = pygame.display.set_mode(
-            (self.width, self.height),
-             pygame.FULLSCREEN
+            (self.width, self.height)#,
+             #pygame.FULLSCREEN
         )
 
         self.font = pygame.font.SysFont('sans-serif', 160, True)
@@ -48,10 +50,15 @@ class Launcher:
 
     def PollEvents(self):
         # Check for events
-    	for event in pygame.event.get():
-    	    if event.type == pygame.QUIT:
-    	        pygame.quit()
-    	        quit()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    quit()
 
     def Update(self):
         # Update the state
@@ -61,23 +68,27 @@ class Launcher:
             if self.state_time >= self.FADE_IN_TIME:
                 self.state = self.ST_FADEOUT
 
-                self.state_time -= self.FADE_IN_TIME
-                self.last_state_change = time.time() - self.state_time
+                self.alpha = 1.0
+                self.rt = self.rendered_text2
 
-            self.alpha = (1.0 * self.state_time / self.FADE_IN_TIME)
-            self.rt = self.rendered_text1
+            else:
+                self.alpha = (1.0 * self.state_time / self.FADE_IN_TIME)
+                self.rt = self.rendered_text1
 
         elif self.state == self.ST_FADEOUT:
-            if self.state_time >= self.FADE_OUT_TIME:
-                if self.parent_conn.recv() == True:
-                	self.parent_conn.send(True)
-                	self.parent_conn.close()
+            if self.isGameLoaded:
+                if self.state_time >= self.FADE_OUT_TIME:
+                    self.parent_conn.send(True)
+                    self.parent_conn.close()
 
-                pygame.quit()
-                quit()
+                    pygame.quit()
+                    quit()
 
-            self.alpha = 1.0 - (1.0 * self.state_time / self.FADE_OUT_TIME)
-            self.rt = self.rendered_text2
+                self.alpha = 1.0 - (1.0 * self.state_time / self.FADE_OUT_TIME)
+            else:
+                if self.parent_conn.poll():
+                    self.isGameLoaded = True
+                    self.last_state_change = time.time()
 
         self.surf2 = pygame.surface.Surface((self.text_rect.width, self.text_rect.height))
         self.surf2.set_alpha(255 * self.alpha)

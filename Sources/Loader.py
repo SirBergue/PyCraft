@@ -6,9 +6,6 @@ from Sources.Graphics.Window import *
 
 class Loader:
 	def __init__(self, conn):
-		# Setup the OpenGL
-		self.setup_gl()
-
 		# Create Window Object
 		window = Window(
 			caption='PyCraft',
@@ -16,6 +13,9 @@ class Loader:
 			vsync=True,
 			visible=False
 		)
+
+		# Setup the OpenGL
+		self.setup_gl()
 
 		conn.send(True)
 
