@@ -51,7 +51,7 @@ ITEMS_PATH   = "Assets/ItemsAtlas.png"
 TARGET_SIZE = 16
 
 # Chunk constants
-RENDER_VISION   = 5
+RENDER_VISION   = 3
 CHUNK_DISTANCE  = 10
 CHUNK_WIDTH     = 16
 CHUNK_HEIGHT    = 16
