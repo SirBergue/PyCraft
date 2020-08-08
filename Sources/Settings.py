@@ -41,8 +41,11 @@ TREE_SIDES = {
 	1: [2, 2]
 }
 
+PICKAXE = [3, 9] # Diamond Pickaxe
+
 # Texture constants
 TEXTURE_PATH = "Assets/Atlas.png"
+ITEMS_PATH   = "Assets/ItemsAtlas.png"
 
 # Player constants
 TARGET_SIZE = 16

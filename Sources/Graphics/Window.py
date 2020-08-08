@@ -6,6 +6,7 @@ from Sources.Settings import *
 from Sources.Physics.Player import *
 from Sources.World.Chunk import *
 from Sources.Utils.Inventory import *
+from Sources.Graphics.TextureLoader import *
 
 import time
 
@@ -86,7 +87,7 @@ class Window(pyglet.window.Window):
 		self.push_handlers(self.key_handler)
 
 		# Load texture loader
-		self.texture_loader = TextureLoader(TEXTURE_PATH)
+		self.texture_loader = TextureLoader()
 
 		# Implements update function to pyglet
 		pyglet.clock.schedule(self.update)
@@ -106,7 +107,7 @@ class Window(pyglet.window.Window):
 
 		self.player = Player((0.5, 18, 0.5), (60, 90))
 		self.world = World(self.texture_loader)
-		self.inv = Inventory(self.width, self.height)
+		self.inv = Inventory(self.width, self.height, self.texture_loader)
 
 		# Creates a player target
 		self.player_target = pyglet.graphics.vertex_list(4, ('v2i', (
@@ -120,6 +121,8 @@ class Window(pyglet.window.Window):
 			self.width // 2,
 			self.height // 2 + TARGET_SIZE
 		)))
+
+		self.statistics = True
 
 	def on_mouse_motion(self, x, y, dx, dy):
 		self.player.mouse_motion(dx, dy)
@@ -144,6 +147,8 @@ class Window(pyglet.window.Window):
 	def on_key_press(self, symbol, modifiers):
 		if symbol == key.ESCAPE:
 			self.close()
+		if symbol == key.F3:
+			self.statistics = not self.statistics
 
 	def update(self, dt):
 		self.player.update(dt, self.key_handler)
@@ -192,44 +197,11 @@ class Window(pyglet.window.Window):
 
 		self.set_2d()
 		self.draw_player_target()
-		self.draw_framerate()
-		self.draw_player_location()
+		
+		if self.statistics:
+			self.draw_framerate()
+			self.draw_player_location()
+
 		self.inv.draw()
 
 		glPopMatrix()
-
-class TextureLoader:
-	def __init__(self, path):
-		self.raw_spritesheet = pyglet.image.load(path)
-
-		start = time.process_time()
-
-		self.grass_block   = self.load_texture_with_sides(16, GRASS_SIDES)
-		self.earth_block   = self.load_texture_with_sides(16, EARTH_SIDES)
-		self.stone_block   = self.load_texture_with_sides(16, STONE_SIDES)
-		self.bedrock_block = self.load_texture_with_sides(16, BEDROCK_SIDES)
-		self.coal_block    = self.load_texture_with_sides(16, COAL_SIDES)
-		self.leaf_block    = self.load_texture_with_sides(16, LEAF_SIDES)
-		self.tree_block    = self.load_texture_with_sides(16, TREE_SIDES)
-
-		print(f'Finished Block Loading: {time.process_time() - start}')
-
-	def load_texture_with_sides(self, size, sides_location:dict):
-		""" Method called to return a spritesheet loaded and its sides"""
-
-		sides = []
-
-		for i in range(len(sides_location)):
-			sides.append(pyglet.graphics.TextureGroup(
-					self.raw_spritesheet.get_region(
-							x=sides_location[i][0] * size,
-							y=sides_location[i][1] * size,
-							width=size,
-							height=size
-						).get_texture()
-				))
-
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-
-		return sides

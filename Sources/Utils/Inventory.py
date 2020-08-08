@@ -5,16 +5,28 @@ from pyglet.window import key
 from Sources.Settings import *
 
 class Inventory:
-    def __init__(self, width, height):
+    def __init__(self, width, height, texture_loader):
         self.base_distance = 50
         self.inv_size = 9
 
         self.start_y = 0
         self.start_x = (width - self.base_distance * self.inv_size) // 2
 
+        self.pickaxe = texture_loader.diamond_pickaxe
+
         self.indice = 0
 
     def draw(self):
+        # glClearColor(0, 0, 0, 0)
+        # glEnable(GL_BLEND)
+        # glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        #
+        # self.pickaxe.blit(100, 300, width=16, height=16)
+        #
+        # glClearColor(0.5, 0.6, 1.0, 1.0)
+        # glDisable(GL_BLEND)
+
+
         for i in range(self.inv_size):
             if i == self.indice:
                 glColor3d(0.9, 0.9, 0.9)
