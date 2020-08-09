@@ -46,12 +46,14 @@ PICKAXE = [3, 9] # Diamond Pickaxe
 # Texture constants
 TEXTURE_PATH = "Assets/Atlas.png"
 ITEMS_PATH   = "Assets/ItemsAtlas.png"
+HEART_PATH   = "Assets/Heart.png"
+FOOD_PATH    = "Assets/Food.png"
 
 # Player constants
 TARGET_SIZE = 16
 
 # Chunk constants
 RENDER_VISION   = 3
-CHUNK_DISTANCE  = 10
+CHUNK_DISTANCE  = 5
 CHUNK_WIDTH     = 16
 CHUNK_HEIGHT    = 16

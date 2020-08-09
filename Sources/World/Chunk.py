@@ -14,9 +14,12 @@ class Chunk:
 		self.chunk_x = chunk_x * CHUNK_WIDTH
 		self.chunk_z = chunk_z * CHUNK_WIDTH
 
+		self.x = chunk_x
+		self.z = chunk_z
+
 		self.tex_loader = tex_loader
 
-		self.blocks = {}
+		self.blocks = []
 
 		self.tex_coords = (
 			0, 0, 1, 0,
@@ -30,8 +33,6 @@ class Chunk:
 		}
 
 		start = time.process_time()
-
-		self.now = 0
 
 		for x in range(CHUNK_WIDTH):
 			for y in range(CHUNK_HEIGHT):
@@ -88,14 +89,17 @@ class Chunk:
 
 			self.using_texture = self.texture_layer.get(y, default)
 
-			self.blocks[self.now] = self.generate_block(
-				x + self.chunk_x,
-				y,
-				z + self.chunk_z,
-				self.using_texture,
-				self.batch
+			self.blocks.append(
+				{x: {y: {z:
+					self.generate_block(
+						x + self.chunk_x,
+						y,
+						z + self.chunk_z,
+						self.using_texture,
+						self.batch
+					)
+				}}}
 			)
-			self.now += 1
 
 	def generate_tree(self):
 		x = int(15 * random.random())
@@ -104,15 +108,17 @@ class Chunk:
 		self.using_texture = self.tex_loader.tree_block
 
 		for height in range(4):
-			self.blocks[self.now] = self.generate_block(
-				x + self.chunk_x,
-				CHUNK_HEIGHT + height,
-				z + self.chunk_z,
-				self.using_texture,
-				self.custom
+			self.blocks.append(
+				{x: {CHUNK_HEIGHT + height: {z:
+					self.generate_block(
+						x + self.chunk_x,
+						CHUNK_HEIGHT + height,
+						z + self.chunk_z,
+						self.using_texture,
+						self.custom
+					)
+				}}}
 			)
-
-			self.now += 1
 
 		height += 1
 
@@ -121,25 +127,29 @@ class Chunk:
 		for leaf_y in range(2):
 			for leaf_x in range(2):
 				for leaf_z in range(2):
-					self.blocks[self.now] = self.generate_block(
-						x + self.chunk_x + leaf_x,
-						CHUNK_HEIGHT + height + leaf_y,
-						z + self.chunk_z + leaf_z,
-						self.using_texture,
-						self.custom
+					self.blocks.append(
+						{x + leaf_x: {CHUNK_HEIGHT + height + leaf_y: {z + leaf_z:
+							self.generate_block(
+								x + self.chunk_x + leaf_x,
+								CHUNK_HEIGHT + height + leaf_y,
+								z + self.chunk_z + leaf_z,
+								self.using_texture,
+								self.custom
+							)
+						}}}
 					)
 
-					self.now += 1
-
-					self.blocks[self.now] = self.generate_block(
-						x + self.chunk_x - leaf_x,
-						CHUNK_HEIGHT + height + leaf_y,
-						z + self.chunk_z - leaf_z,
-						self.using_texture,
-						self.custom
+					self.blocks.append(
+						{x - leaf_x: {CHUNK_HEIGHT + height + leaf_y: {z - leaf_z:
+							self.generate_block(
+								x + self.chunk_x - leaf_x,
+								CHUNK_HEIGHT + height + leaf_y,
+								z + self.chunk_z - leaf_z,
+								self.using_texture,
+								self.custom
+							)
+						}}}
 					)
-
-					self.now += 1
 
 	def generate_block(self, x, y, z, tex_sides, batch):
 		square_dict_block = []
@@ -223,22 +233,3 @@ class Chunk:
 			('v3f/static', vertex),
 			('t2f', self.tex_coords * int((size / 4)))
 		)
-
-class World:
-	def __init__(self, tex_loader):
-		self.chunks = []
-		self.blocks = {}
-		self.actual_block = 0
-
-		for chunk_x in range(CHUNK_DISTANCE):
-			for chunk_z in range(CHUNK_DISTANCE):
-				chunk = Chunk(tex_loader, chunk_x, chunk_z)
-
-				self.blocks[self.actual_block] = chunk.blocks
-				self.chunks.append(chunk)
-
-				self.actual_block += 1
-
-	def remove_block(self, chunk, block):
-		for i in range(len(self.blocks[chunk][block])):
-			self.blocks[chunk][block][i].delete()

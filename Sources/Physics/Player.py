@@ -32,7 +32,7 @@ class Player:
 
 	def update(self, dt, keys):
 		sens = 1
-		d = dt * 10
+		d = dt * 15
 
 		rotY = -self.rot[1] / 180 * math.pi
 
@@ -56,12 +56,9 @@ class Player:
 			self.pos[2] += dx * sens
 
 		if keys[key.SPACE]:
-			self.pos[1] += d
-			self.flying = True
-
-		if keys[key.TAB]:
-			self.vel = 0
-			self.flying = False
+			if self.flying:
+				self.pos[1] += d
 
 		if keys[key.LSHIFT]:
-			self.pos[1] -= d
+			if self.flying:
+				self.pos[1] -= d

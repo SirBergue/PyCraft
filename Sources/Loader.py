@@ -4,6 +4,8 @@ from pyglet.window import key, mouse
 
 from Sources.Graphics.Window import *
 
+#https://ratcave.readthedocs.io/en/latest/tutorial1.html
+
 class Loader:
 	def __init__(self, conn):
 		# Create Window Object

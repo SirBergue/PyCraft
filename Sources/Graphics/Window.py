@@ -4,7 +4,7 @@ from pyglet.window import key, mouse
 
 from Sources.Settings import *
 from Sources.Physics.Player import *
-from Sources.World.Chunk import *
+from Sources.World.World import *
 from Sources.Utils.Inventory import *
 from Sources.Graphics.TextureLoader import *
 
@@ -65,6 +65,14 @@ class Window(pyglet.window.Window):
 
 		self.framerate.draw()
 
+	def draw_mode(self):
+		if self.player.flying:
+			self.player_mode_label.text = 'Flying'
+		else:
+			self.player_mode_label.text = 'Walking'
+
+		self.player_mode_label.draw()
+
 	def draw_player_location(self):
 		self.player_location_label.text = f'X: {self.player.pos[0] // 1}   Y: {self.player.pos[1] // 1}   Z: {self.player.pos[2] // 1}'
 		self.player_location_label.draw()
@@ -95,18 +103,33 @@ class Window(pyglet.window.Window):
 		# Framerate variables
 		self.last_time_framerate = time.time()
 		self.frames_passed = 0
-		self.framerate = pyglet.text.Label(text='Unknown', font_size=32, x=10, y=10, color=(255, 255, 255, 255))
+		self.framerate = pyglet.text.Label(
+			text='Unknown',
+			font_size=32,
+			x=10,
+			y=10,
+			color=(255, 255, 255, 255)
+		)
 
 		self.player_location_label = pyglet.text.Label(
 			text='Unknown',
 			font_size=24,
 			x=self.width - (self.width / 4),
-			y=self.height - 40,
+			y=self.height - 24,
+			color=(255, 255, 255, 255)
+		)
+
+		self.player_mode_label = pyglet.text.Label(
+			text='Unknown',
+			font_size=24,
+			x=0,
+			y=self.height - 24,
 			color=(255, 255, 255, 255)
 		)
 
 		self.player = Player((0.5, 18, 0.5), (60, 90))
 		self.world = World(self.texture_loader)
+
 		self.inv = Inventory(self.width, self.height, self.texture_loader)
 
 		# Creates a player target
@@ -129,26 +152,16 @@ class Window(pyglet.window.Window):
 
 	def on_mouse_press(self, x, y, button, mod):
 		player_x, player_y, player_z = self.player.pos
-
-		if player_x // 16 > player_z // 16:
-			chunk = player_x // 16
-		else:
-			chunk = player_z // 16
-
-		block_x = player_x // 1
-		block_y = player_y // 1
-		block_z = player_z // 1
-
-		block_number = block_x * block_y * block_z
-		# idea
-
-		self.world.remove_block(chunk, block_number)
+		self.world.remove_block(player_x, player_y, player_z)
 
 	def on_key_press(self, symbol, modifiers):
 		if symbol == key.ESCAPE:
 			self.close()
 		if symbol == key.F3:
 			self.statistics = not self.statistics
+		if symbol == key.TAB:
+			self.player.vel = 0
+			self.player.flying = not self.player.flying
 
 	def update(self, dt):
 		self.player.update(dt, self.key_handler)
@@ -160,6 +173,12 @@ class Window(pyglet.window.Window):
 			if self.player.gravity < 1:
 				self.player.vel += self.player.gravity
 				self.player.vel = self.player.vel
+
+		if self.world.relation_block(
+			self.player.pos[0], self.player.pos[1] - 2, self.player.pos[2]
+		):
+				self.player.vel = 0
+
 
 		if self.player.pos[1] <= -20:
 			self.player.pos[1] = 18
@@ -197,10 +216,11 @@ class Window(pyglet.window.Window):
 
 		self.set_2d()
 		self.draw_player_target()
-		
+
 		if self.statistics:
 			self.draw_framerate()
 			self.draw_player_location()
+			self.draw_mode()
 
 		self.inv.draw()
 

@@ -6,26 +6,46 @@ from Sources.Settings import *
 
 class Inventory:
     def __init__(self, width, height, texture_loader):
-        self.base_distance = 50
+        self.base_distance = 60
         self.inv_size = 9
+        self.life = 9
+
+        self.width = width
 
         self.start_y = 0
         self.start_x = (width - self.base_distance * self.inv_size) // 2
 
         self.pickaxe = texture_loader.diamond_pickaxe
 
+        self.hearts  = texture_loader.hearts
+        self.food    = texture_loader.food
+
         self.indice = 0
 
     def draw(self):
-        # glClearColor(0, 0, 0, 0)
-        # glEnable(GL_BLEND)
-        # glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        #
-        # self.pickaxe.blit(100, 300, width=16, height=16)
-        #
-        # glClearColor(0.5, 0.6, 1.0, 1.0)
-        # glDisable(GL_BLEND)
+        glClearColor(0, 0, 0, 0)
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
+        add = 25
+        i = 0
+
+        for i in range(self.life):
+            self.hearts.blit(
+                self.start_x + (add * i),
+                self.base_distance + 10,
+                width=25, height=25
+            )
+
+        for i in range(9):
+            self.food.blit(
+                self.start_x + (self.base_distance * self.inv_size) - (add * i) - 25,
+                self.base_distance + 10,
+                width=25, height=30
+            )
+
+        glClearColor(0.5, 0.6, 1.0, 1.0)
+        glDisable(GL_BLEND)
 
         for i in range(self.inv_size):
             if i == self.indice:
