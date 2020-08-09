@@ -1,11 +1,11 @@
 <h1 align="center">
-<img alt="Logo PyCraft" src="./readmeAssets/PyCraft.png"> 
+<img alt="Logo PyCraft" src="./ReadmeAssets/PyCraft.png">
 <br>
 </h1>
 
 <h4 align="center">
   <p>My Own Minecraft 😅</p>
-  
+
   <p>This application was developed using Python.</p>
 
 </h4>
@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-<img alt="Collage" src="./readmeAssets/mine.png">  
+<img alt="Collage" src="./ReadmeAssets/Mine.png">  
 </p>
 
 ## :rocket: Technologies
@@ -34,13 +34,23 @@ This project was developed with the following technologies:
 To clone and run this application, you'll need [Git](https://git-scm.com), [Python](https://www.python.org/) + [PyCharm](https://www.jetbrains.com/pt-br/pycharm/download/) or another IDE. <b>From your command line:
 
 ```bash
+## Windows Dependencies Install
+py -m pip install pyglet pygame
+
+## Linux Dependencies Install
+pip3 install pyglet pygame
+
 # Clone this repository
 $ git clone https://github.com/SirBergue/PyCraft
 
 # Go into the repository
 $ cd PyCraft
 
-# Run the Launcher.py file
+# Run the Launcher.py file (Windows)
+py -m Launcher.py
+
+# Run the Launcher.py file (Linux)
+python3 Launcher.py
 ```
 
 ## :thumbsup: How To Contribute
@@ -51,7 +61,7 @@ $ cd PyCraft
 -  Make a push to your branch: `git push origin my-feature`.
 
 ## :memo: License
-This project is under the MIT license. See the [LICENSE](https://github.com/SirBergue/PyCraft/blob/master/LICENSE) for more information.
+This project is under the GPLv3 license. See the [LICENSE](https://github.com/SirBergue/PyCraft/blob/master/LICENSE) for more information.
 
 ---
 
