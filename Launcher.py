@@ -1,11 +1,3 @@
-import os
-import time
-
-from multiprocessing import Process, Pipe
-
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
-import pygame
-
 class Launcher:
     def __init__(self):
         self.parent_conn, self.child_conn = Pipe()
@@ -113,4 +105,13 @@ class Launcher:
         from Sources import Loader
         Loader.Loader(conn)
 
-Launcher()
+if __name__ == '__main__':
+    import os
+    import time
+
+    from multiprocessing import Process, Pipe
+
+    os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
+    import pygame
+
+    Launcher()
