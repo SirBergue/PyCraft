@@ -7,8 +7,8 @@ class Launcher:
 
         pygame.init()
 
-        self.FADE_IN_TIME = 2.5
-        self.FADE_OUT_TIME = 2.5
+        self.FADE_IN_TIME = 1
+        self.FADE_OUT_TIME = 1
 
         self.isGameLoaded = False
 
@@ -25,10 +25,11 @@ class Launcher:
              #pygame.FULLSCREEN
         )
 
-        self.font = pygame.font.SysFont('sans-serif', 160, True)
+        self.font = pygame.font.SysFont('Comic Sans MS', 160, True)
 
         self.rendered_text1 = self.font.render('Made in Python', True, (255, 0, 0))
         self.rendered_text2 = self.font.render('By SirBergue', True, (255, 0, 0))
+
 
         self.text_rect = self.rendered_text1.get_rect(center=(
             self.width // 2,
