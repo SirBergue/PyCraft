@@ -30,7 +30,7 @@ class Player:
 		elif self.rot[0] < -90:
 			self.rot[0] = -90
 
-	def update(self, dt, keys):
+	def update(self, dt, keys, relation_block):
 		sens = 1
 		d = dt * 15
 
@@ -40,25 +40,32 @@ class Player:
 		dz = d * math.cos(rotY)
 
 		if keys[key.W]:
-			self.pos[0] += dx * sens
-			self.pos[2] -= dz * sens
+			print(self.pos)
+			if not relation_block(self.pos[0] + dx * sens, self.pos[1], self.pos[2] - dz * sens):
+				self.pos[0] += dx * sens
+				self.pos[2] -= dz * sens
 
 		if keys[key.S]:
-			self.pos[0] -= dx * sens
-			self.pos[2] += dz * sens
+			if not relation_block(self.pos[0] - dx * sens, self.pos[1], self.pos[2] + dz * sens):
+				self.pos[0] -= dx * sens
+				self.pos[2] += dz * sens
 
 		if keys[key.A]:
-			self.pos[0] -= dz * sens
-			self.pos[2] -= dx * sens
+			if not relation_block(self.pos[0] - dx * sens, self.pos[1], self.pos[2] - dz * sens):
+				self.pos[0] -= dz * sens
+				self.pos[2] -= dx * sens
 
 		if keys[key.D]:
-			self.pos[0] += dz * sens
-			self.pos[2] += dx * sens
+			if not relation_block(self.pos[0] + dx * sens, self.pos[1], self.pos[2] + dz * sens):
+				self.pos[0] += dz * sens
+				self.pos[2] += dx * sens
 
 		if keys[key.SPACE]:
 			if self.flying:
-				self.pos[1] += d
+				if not relation_block(self.pos[0], self.pos[1] + d, self.pos[2]):
+					self.pos[1] += d
 
 		if keys[key.LSHIFT]:
 			if self.flying:
-				self.pos[1] -= d
+				if not relation_block(self.pos[0], self.pos[1] - d, self.pos[2]):
+					self.pos[1] -= d

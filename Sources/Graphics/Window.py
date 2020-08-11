@@ -164,7 +164,7 @@ class Window(pyglet.window.Window):
 			self.player.flying = not self.player.flying
 
 	def update(self, dt):
-		self.player.update(dt, self.key_handler)
+		self.player.update(dt, self.key_handler, self.world.relation_block)
 		self.inv.update(self.key_handler)
 
 		if not self.player.flying:
@@ -172,7 +172,6 @@ class Window(pyglet.window.Window):
 
 			if self.player.gravity < 1:
 				self.player.vel += self.player.gravity
-				self.player.vel = self.player.vel
 
 		if self.world.relation_block(
 			self.player.pos[0], self.player.pos[1] - 2, self.player.pos[2]

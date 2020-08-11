@@ -20,13 +20,9 @@ class World:
 
 	def get_block_chunk(self, player_x, player_y, player_z, chunk):
 		for element in chunk.blocks:
-			for key_x in element:
-				if key_x == player_x:
-					for key_y in element[key_x]:
-						if key_y == player_y:
-							for key_z in element[key_x][key_y]:
-								if key_z == player_z:
-									return element[key_x][key_y][key_z]
+			if block := (
+				element.get(player_x, {}).get(player_y, {}).get(player_z, {})):
+				return block
 
 	def relation_block(self, player_x, player_y, player_z):
 		chunk_x = player_x // 16
